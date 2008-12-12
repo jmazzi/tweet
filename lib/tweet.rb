@@ -2,6 +2,7 @@ $LOAD_PATH << File.dirname(__FILE__)
 require 'rubygems'
 require 'activesupport'
 require 'rest_client'
+require File.dirname(__FILE__)+'/../lib/tiny_url'
 
 module Tweet
   CONFIG_FILE = ENV['HOME']+'/.tweet'
@@ -11,6 +12,7 @@ module Tweet
     
     def create_status(status)
       get_credentials!
+      status = TinyUrl.auto_link_urls(status)
       resource = RestClient::Resource.new 'http://twitter.com/statuses/update.xml', username, password
       resource.post(:status => status, :source => 'tweetgem', :content_type => 'application/xml', :accept => 'application/xml')
     end
